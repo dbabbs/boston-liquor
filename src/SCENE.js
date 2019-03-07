@@ -1,3 +1,5 @@
+import { xyz } from './here.js';
+import { categories } from './config';
 const SCENE = {
 	"cameras": {
 		"camera1": {
@@ -12,9 +14,9 @@ const SCENE = {
 		},
 		"_boston_alcohol": {
 			"type": "GeoJSON",
-			"url": "https://xyz.api.here.com/hub/spaces/eNy2n73F/tile/web/{z}_{x}_{y}",
+			"url": `https://xyz.api.here.com/hub/spaces/${xyz.space}/tile/web/{z}_{x}_{y}`,
 			"url_params": {
-				"access_token": "AbuvUKANJJEZR4nb1zkEXBE"
+				"access_token": xyz.token
 			}
 		}
 	},
@@ -29,7 +31,7 @@ const SCENE = {
 			},
 			"draw": {
 				"points": {
-					"color": "blue",
+					"color": "function() {\n    console.log(feature)\n    if (feature.Description === 'All_Alcohol') {\n        return '#3C4BF1';\n    } else if (feature.Description === 'Farmer') {\n        return '#8BFFF2'\n    } else if (feature.Description === 'Malt_Wine') {\n        return '#50D05E'\n    } else if (feature.Description === 'Malt_Wine_Liquor') {\n        return '#E265F0'\n    } else if (feature.Description === 'Other') {\n        return 'yellow'\n    } else if (feature.Description === 'Tavern') {\n        return '#EC3B43'\n    }\n}\n",
 					"size": [
 						[
 							13,
@@ -64,7 +66,7 @@ const SCENE = {
 						"priority": 10,
 						"order": 999,
 						"font": {
-							"family": "Roboto Mono",
+							"family": "Lato",
 							"fill": "#C3CDD4",
 							"stroke": {
 								"color": "white",
@@ -120,7 +122,7 @@ const SCENE = {
 			"draw": {
 				"polygons": {
 					"order": "function() { return feature.sort_rank; }",
-					"color": "#C3CDD4"
+					"color": "#DEE1E3"
 				}
 			}
 		},

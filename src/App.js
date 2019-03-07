@@ -5,62 +5,22 @@ import { hereIsolineUrl, hereReverseGeocodeUrl } from './here';
 
 import pointsWithinPolygon from '@turf/points-within-polygon';
 import {polygon} from '@turf/helpers'
+import { categories } from './config.js'
 
 class App extends React.Component {
 
    constructor(props) {
       super(props);
       this.state = {
-
-         //Coordinates are in format [Latitude, Longitude]
          name: 'Seattle, WA',
-         startCoordinates: [42.362451, -71.058466],
+         startCoordinates: [42.35999762427866, -71.05780662703944],
          polygon: [],
          markerPosition: [],
          filterTags: '',
          zoom: 14,
-         options: {
-
-            type: 'distance',
-            range: 1000,
-            mode: 'car',
-            traffic: 'disabled',
-            style: 'reduced.night'
-         },
          range: 20,
          address: '',
-         categories: [
-            {
-               label: 'All Alcohol',
-               id: 'all_alcohol',
-               active: true
-            },
-            {
-               label: 'Farmer',
-               id: 'farmer',
-               active: true
-            },
-            {
-               label: 'Malt & Wine',
-               id: 'malt_&_wine',
-               active: true
-            },
-            {
-               label: 'Malt, Wine, Liquor',
-               id: 'malt,_wine,_liquor',
-               active: true
-            },
-            {
-               label: 'Other',
-               id: 'other',
-               active: true
-            },
-            {
-               label: 'Tavern',
-               id: 'tavern',
-               active: true
-            }
-         ]
+         categories: categories
       }
    }
 
@@ -157,24 +117,25 @@ class App extends React.Component {
       return (
          <div className="app">
             <div className="sidebar">
-               <h3>Boston Liqour Licenses</h3>
-               <p>List of establishments with liqour licenses in the city of Boston, Massachusetts from 2016.</p>
-               <h4>Filter by type:</h4>
+               <h1>Boston Liquor Licenses 🍻</h1>
+               <p>List of establishments with liqour licenses in Boston, MA from 2016.</p>
+               <h2>Establishment type</h2>
 
                {
                   this.state.categories.map(
                      (cat, i) =>
-                     <div key={i}>
-                        <input onChange={this.handleCategoryFilter} type="checkbox" name="type" id={cat.id} checked={cat.active} />
-                        <label htmlFor={cat.id}>
-                           <div className="line" id={`${cat.id}-label`}></div>
+                     <div className="line-parent" key={i}>
+                           <div className="line" id={`${cat.id}-label`} style={{background: cat.background}}></div>
                            {cat.label}
-                        </label>
                      </div>
                   )
                }
-               <h4>Explore establishments in walking distance</h4>
-               <p>Click the map to add a draggable marker</p>
+               <h2>Explore establishments in walking distance</h2>
+               {
+                  !this.state.markerPosition.length &&
+                  <p>Click the map to add a draggable marker</p>
+               }
+
                {
                   this.state.markerPosition.length &&
                   <div>
@@ -188,29 +149,26 @@ class App extends React.Component {
                         />
                         {this.state.range}{" minutes"}
                      </div>
+                     <p>Within a <strong>{this.state.range}</strong> minute walk of <strong>{this.state.address}</strong>, there are <strong>{this.state.filterTags.length}</strong> establishments that serve liquor.</p>
                      <button
                         onClick={this.handleClearMarker}
                      >
-                        Clear Marker
+                        Clear Isoline Filter
                      </button>
-                     <p>Within a <strong>{this.state.range}</strong> minute walk of <strong>{this.state.address}</strong>, there are <strong>{this.state.filterTags.length}</strong> establishments that serve liquor.</p>
                   </div>
                }
+               <a id="link" href="https://here.xyz">Get mappy with HERE XYZ</a>
             </div>
             <div className="map-grid">
 
-                  <MapContainer
-                     center={this.state.startCoordinates}
-                     zoom={this.state.zoom}
-                     options={this.state.options}
-                     handleMarkerMove={this.handleMarkerMove}
-                     polygon={this.state.polygon}
-                     filterTags={{
-                        ids: this.state.filterTags.length > 0 ? this.state.filterTags : [],
-                        categories: this.state.categories.filter(x => x.active).map(x => x.id)
-                     }}
-                     markerPosition={this.state.markerPosition}
-                  />
+               <MapContainer
+                  center={this.state.startCoordinates}
+                  zoom={this.state.zoom}
+                  handleMarkerMove={this.handleMarkerMove}
+                  polygon={this.state.polygon}
+                  filterTags={this.state.filterTags.length > 0 ? this.state.filterTags : []}
+                  markerPosition={this.state.markerPosition}
+               />
 
 
             </div>

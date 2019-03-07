@@ -1,10 +1,10 @@
 import React from 'react';
-import { Map, Marker, Polygon, Popup } from 'react-leaflet';
-
+import { Map, Marker, Polygon, Icon } from 'react-leaflet';
+import L from 'leaflet';
+import { xyz } from './here'
 import Tangram from 'tangram';
 
 import SCENE from './SCENE'
-
 
 export class MapContainer extends React.Component {
 
@@ -34,23 +34,12 @@ export class MapContainer extends React.Component {
          })
          this.state.layer.addTo(this.map.leafletElement);
       })
-
-
-
-
-
    }
 
    componentDidUpdate() {
-      // console.log('new')
-      // console.log(this.state.loaded)
-      const tags = this.props.filterTags.ids.join(',') + '+' + this.props.filterTags.categories.join('+');
       if (this.state.loaded) {
-         this.state.layer.scene.config.sources._boston_alcohol.url = 'https://xyz.api.here.com/hub/spaces/PaLBoFL4/tile/web/{z}_{x}_{y}?tags=' + tags;
-         //SCENE.sources._boston_alcohol.url = 'https://xyz.api.here.com/hub/spaces/PaLBoFL4/tile/web/{z}_{x}_{y}?tags=' + this.props.filterTags;
-         // console.log(this.state.layer.scene.config.sources._boston_alcohol.url)
+         this.state.layer.scene.config.sources._boston_alcohol.url = `https://xyz.api.here.com/hub/spaces/${xyz.space}/tile/web/{z}_{x}_{y}?tags=` + this.props.filterTags.join(',');
          this.state.layer.scene.updateConfig()
-         // this.state.layer.scene.load(SCENE);
          console.log(this.state.layer.scene.config.sources._boston_alcohol.url)
       }
    }
@@ -65,6 +54,14 @@ export class MapContainer extends React.Component {
    }
 
    render() {
+      var greenIcon = new L.Icon({
+         iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+         iconSize: [25, 41],
+         iconAnchor: [12, 41],
+         popupAnchor: [1, -34],
+         shadowSize: [41, 41]
+      });
       console.log(this.props.filterTags);
       return (
             <Map
@@ -81,12 +78,14 @@ export class MapContainer extends React.Component {
                      draggable={true}
                      onDragEnd={this.handleDrag}
                      ref={this.marker}
+                     icon={greenIcon}
                   />
                }
                {
                   this.props.polygon.length &&
                   <Polygon
                      positions={this.props.polygon}
+                     color="#FF8281"
                   />
                }
             </Map>
