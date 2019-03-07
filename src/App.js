@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { MapContainer } from './MapContainer';
-import { hereIsolineUrl, maxIsolineRangeLookup } from './here';
+import { hereIsolineUrl, hereReverseGeocodeUrl } from './here';
 
 import pointsWithinPolygon from '@turf/points-within-polygon';
 import {polygon} from '@turf/helpers'
@@ -14,11 +14,11 @@ class App extends React.Component {
 
          //Coordinates are in format [Latitude, Longitude]
          name: 'Seattle, WA',
-         startCoordinates: [42.33621470741859, -71.08935356140138],
+         startCoordinates: [42.362451, -71.058466],
          polygon: [],
-         center: [0, 0],
+         markerPosition: [],
          filterTags: '',
-         zoom: 13,
+         zoom: 14,
          options: {
 
             type: 'distance',
@@ -27,7 +27,40 @@ class App extends React.Component {
             traffic: 'disabled',
             style: 'reduced.night'
          },
-         range: 40
+         range: 20,
+         address: '',
+         categories: [
+            {
+               label: 'All Alcohol',
+               id: 'all_alcohol',
+               active: true
+            },
+            {
+               label: 'Farmer',
+               id: 'farmer',
+               active: true
+            },
+            {
+               label: 'Malt & Wine',
+               id: 'malt_&_wine',
+               active: true
+            },
+            {
+               label: 'Malt, Wine, Liquor',
+               id: 'malt,_wine,_liquor',
+               active: true
+            },
+            {
+               label: 'Other',
+               id: 'other',
+               active: true
+            },
+            {
+               label: 'Tavern',
+               id: 'tavern',
+               active: true
+            }
+         ]
       }
    }
 
@@ -44,7 +77,7 @@ class App extends React.Component {
    }
 
    updatePolygon = () => {
-      fetch(hereIsolineUrl(this.state.center, this.state.range))
+      fetch(hereIsolineUrl(this.state.markerPosition, this.state.range))
       .then(res => res.json())
       .then(res => {
          if (res.hasOwnProperty('response')) {
@@ -52,7 +85,7 @@ class App extends React.Component {
 
             const within = pointsWithinPolygon(this.state.points, turfPoly);
 
-            const tags = within.features.map(feature => feature.properties.Index).join(',');
+            const tags = within.features.map(feature => feature.properties.Index);
 
             this.setState({
                filterTags: tags,
@@ -64,22 +97,29 @@ class App extends React.Component {
                filterTags: ''
             })
          }
-
-
-
-
-
-
       });
    }
 
-   handleDrag = (coordinates) => {
+   updateAddressText = () => {
+      fetch(hereReverseGeocodeUrl(this.state.markerPosition))
+      .then(res => res.json())
+      .then(res => {
+         console.log(res);
+         const address = res.Response.View[0].Result[0].Location.Address;
+         console.log(address);
+         this.setState({
+            address: `${address.HouseNumber !== undefined ? address.HouseNumber : ''}  ${address.Street !== undefined ? address.Street : ''} ${address.City}`
+         })
+      })
+   }
+
+   handleMarkerMove = (coordinates) => {
       this.setState({
-         center: coordinates
+         markerPosition: coordinates
       }, () => {
          this.updatePolygon();
+         this.updateAddressText();
       })
-
    }
 
    handleSlide = (evt) => {
@@ -88,76 +128,74 @@ class App extends React.Component {
       },() => {
          this.updatePolygon();
       })
-
    }
 
    handleClearMarker = () => {
       this.setState({
-         center: [0, 0],
+         markerPosition: [],
       }, () => {
          this.updatePolygon();
       })
    }
 
+   handleCategoryFilter = (evt) => {
+      console.log(evt.target);
+      const copy = this.state.categories.slice();
+
+      this.setState({
+         categories: copy.map(c => {
+            if (c.id === evt.target.id) {
+               c.active = !c.active;
+            }
+            return c;
+         })
+      })
+
+   }
 
    render() {
-
       return (
          <div className="app">
             <div className="sidebar">
                <h3>Boston Liqour Licenses</h3>
-               <p>List of establishments with liqour licenses in the city of Boston, Massachusetts</p>
+               <p>List of establishments with liqour licenses in the city of Boston, Massachusetts from 2016.</p>
                <h4>Filter by type:</h4>
-               <div>
-                  <input type="checkbox" name="type" id="rapid_bus" checked />
 
-                  <label for="rapid_bus">
-                     <div class="line" id="rapid_bus_line"></div>
-                     Rapid Bus
-                  </label>
-               </div>
-               <div>
-                  <input type="checkbox" name="type" id="rapid_bus_transit" checked />
-
-                  <label for="rapid_bus_transit">
-                     <div class="line" id="rapid_bus_transit_line"></div>
-                     Rapid Bus Transit
-                  </label>
-
-               </div>
-               <div>
-                  <input type="checkbox" name="type" id="street_car"checked />
-
-                  <label for="street_car">
-                     <div class="line" id="street_car_line"></div>
-                     Street Car
-                  </label>
-
-               </div>
+               {
+                  this.state.categories.map(
+                     (cat, i) =>
+                     <div key={i}>
+                        <input onChange={this.handleCategoryFilter} type="checkbox" name="type" id={cat.id} checked={cat.active} />
+                        <label htmlFor={cat.id}>
+                           <div className="line" id={`${cat.id}-label`}></div>
+                           {cat.label}
+                        </label>
+                     </div>
+                  )
+               }
                <h4>Explore establishments in walking distance</h4>
                <p>Click the map to add a draggable marker</p>
-               <div>
-                  <input
-                     type="range"
-                     name="volume"
-                     value={this.state.range}
-                     min="1"
-                     max="60"
-                     onChange={this.handleSlide}
-                  />
-                  {this.state.range}{" minutes"}
-               </div>
                {
-                  this.state.center !== [0, 0] &&
-                  <button
-                     onClick={this.handleClearMarker}
-                  >
-                     Clear Marker
-                  </button>
+                  this.state.markerPosition.length &&
+                  <div>
+                     <div>
+                        <input
+                           type="range"
+                           value={this.state.range}
+                           min="1"
+                           max="60"
+                           onChange={this.handleSlide}
+                        />
+                        {this.state.range}{" minutes"}
+                     </div>
+                     <button
+                        onClick={this.handleClearMarker}
+                     >
+                        Clear Marker
+                     </button>
+                     <p>Within a <strong>{this.state.range}</strong> minute walk of <strong>{this.state.address}</strong>, there are <strong>{this.state.filterTags.length}</strong> establishments that serve liquor.</p>
+                  </div>
                }
-
-
-
             </div>
             <div className="map-grid">
 
@@ -165,10 +203,13 @@ class App extends React.Component {
                      center={this.state.startCoordinates}
                      zoom={this.state.zoom}
                      options={this.state.options}
-                     handleDrag={this.handleDrag}
+                     handleMarkerMove={this.handleMarkerMove}
                      polygon={this.state.polygon}
-                     filterTags={this.state.filterTags}
-                     markerPosition={this.state.center}
+                     filterTags={{
+                        ids: this.state.filterTags.length > 0 ? this.state.filterTags : [],
+                        categories: this.state.categories.filter(x => x.active).map(x => x.id)
+                     }}
+                     markerPosition={this.state.markerPosition}
                   />
 
 

@@ -5,9 +5,11 @@ export const hereCredentials = {
 
 export const hereIsolineUrl = (coords, range) => `https://isoline.route.api.here.com/routing/7.2/calculateisoline.json?app_id=${hereCredentials.id}&app_code=${hereCredentials.code}&mode=shortest;pedestrian;traffic:disabled&start=geo!${coords[0]},${coords[1]}&range=${range * 60}&rangetype=time`
 
-export const hereTileUrl = (style) => `https://2.base.maps.api.here.com/maptile/2.1/maptile/newest/${style}/{z}/{x}/{y}/512/png8?app_id=${hereCredentials.id}&app_code=${hereCredentials.code}&ppi=320`;
-
 export const maxIsolineRangeLookup = {
    time: 5000,
    distance: 80000
 }
+
+export const hereGeocoderUrl = (query) => `https://geocoder.api.here.com/6.2/geocode.json?app_id=${hereCredentials.id}&app_code=${hereCredentials.code}&searchtext=${query}`;
+
+export const hereReverseGeocodeUrl = (coordinates) => `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${coordinates[0]},${coordinates[1]},250&mode=retrieveAddresses&maxresults=1&gen=9&app_id=${hereCredentials.id}&app_code=${hereCredentials.code}`;

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Map, Marker, Polygon } from 'react-leaflet';
-import { hereTileUrl } from './here';
+import { Map, Marker, Polygon, Popup } from 'react-leaflet';
 
 import Tangram from 'tangram';
 
@@ -45,50 +44,49 @@ export class MapContainer extends React.Component {
    componentDidUpdate() {
       // console.log('new')
       // console.log(this.state.loaded)
-
+      const tags = this.props.filterTags.ids.join(',') + '+' + this.props.filterTags.categories.join('+');
       if (this.state.loaded) {
-         this.state.layer.scene.config.sources._boston_alcohol.url = 'https://xyz.api.here.com/hub/spaces/PaLBoFL4/tile/web/{z}_{x}_{y}?tags=' + this.props.filterTags;
+         this.state.layer.scene.config.sources._boston_alcohol.url = 'https://xyz.api.here.com/hub/spaces/PaLBoFL4/tile/web/{z}_{x}_{y}?tags=' + tags;
          //SCENE.sources._boston_alcohol.url = 'https://xyz.api.here.com/hub/spaces/PaLBoFL4/tile/web/{z}_{x}_{y}?tags=' + this.props.filterTags;
          // console.log(this.state.layer.scene.config.sources._boston_alcohol.url)
          this.state.layer.scene.updateConfig()
          // this.state.layer.scene.load(SCENE);
+         console.log(this.state.layer.scene.config.sources._boston_alcohol.url)
       }
    }
 
    handleDrag = () => {
       const coordinates = this.marker.current.leafletElement.getLatLng();
-      this.props.handleDrag([coordinates.lat, coordinates.lng]);
+      this.props.handleMarkerMove([coordinates.lat, coordinates.lng]);
    }
 
    handleClick = (evt) => {
-
-      this.props.handleDrag([evt.latlng.lat, evt.latlng.lng])
+      this.props.handleMarkerMove([evt.latlng.lat, evt.latlng.lng])
    }
 
    render() {
-      console.log(this.props);
+      console.log(this.props.filterTags);
       return (
             <Map
                ref={(ref) => { this.map = ref }}
                center={this.props.center}
                zoom={this.props.zoom}
                zoomControl={false}
-               attributionControl={this.props.index === 8}
                onClick={this.handleClick}
             >
-
-               <Marker
-                  position={this.props.markerPosition}
-                  draggable={true}
-                  onDragEnd={this.handleDrag}
-                  ref={this.marker}
-
-               />
                {
-                  this.props.polygon.length > 0 &&
+                  this.props.markerPosition.length &&
+                  <Marker
+                     position={this.props.markerPosition}
+                     draggable={true}
+                     onDragEnd={this.handleDrag}
+                     ref={this.marker}
+                  />
+               }
+               {
+                  this.props.polygon.length &&
                   <Polygon
                      positions={this.props.polygon}
-                     color="#2DD5C9"
                   />
                }
             </Map>

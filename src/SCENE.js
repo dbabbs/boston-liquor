@@ -12,39 +12,13 @@ const SCENE = {
 		},
 		"_boston_alcohol": {
 			"type": "GeoJSON",
-			"url": "https://xyz.api.here.com/hub/spaces/PaLBoFL4/tile/web/{z}_{x}_{y}",
+			"url": "https://xyz.api.here.com/hub/spaces/eNy2n73F/tile/web/{z}_{x}_{y}",
 			"url_params": {
 				"access_token": "AbuvUKANJJEZR4nb1zkEXBE"
 			}
 		}
 	},
 	"global": {
-		"width": [
-			[
-				5,
-				5000
-			],
-			[
-				8,
-				800
-			],
-			[
-				10,
-				200
-			],
-			[
-				12,
-				160
-			],
-			[
-				14,
-				60
-			],
-			[
-				18,
-				20
-			]
-		],
 		"language": "en",
 		"language_text_source": "function() {\n    // Use preferred language label if available\n    return (global.language && feature['name:'+global.language]) || feature.name;\n}\n"
 	},
@@ -55,14 +29,14 @@ const SCENE = {
 			},
 			"draw": {
 				"points": {
-					"color": "#0258AE",
+					"color": "blue",
 					"size": [
 						[
 							13,
 							"7.5px"
 						],
 						[
-							17,
+							16,
 							"16px"
 						]
 					],
@@ -79,9 +53,6 @@ const SCENE = {
 			"city-points": {
 				"filter": {
 					"kind": "locality",
-					"not": {
-						"name": "Arlington"
-					},
 					"kind_detail": "city",
 					"$zoom": {
 						"max": 18
