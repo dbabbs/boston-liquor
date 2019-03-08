@@ -6,6 +6,8 @@ import pointsWithinPolygon from '@turf/points-within-polygon';
 import { polygon } from '@turf/helpers'
 import { categories } from './config.js'
 
+import SCENE from './SCENE';
+
 class App extends React.Component {
 
    constructor(props) {
@@ -21,11 +23,19 @@ class App extends React.Component {
          address: '',
          categories: categories,
          addressSearch: '134 Salem St. Boston',
-         tooltipActive: false
+         tooltipActive: false,
+         scene: SCENE
       }
    }
 
-
+   updateFilterTags = (tags) => {
+      const sceneCopy = Object.assign({}, this.state.scene);
+      sceneCopy.sources._boston_alcohol.url = `https://xyz.api.here.com/hub/spaces/${xyz.space}/tile/web/{z}_{x}_{y}?tags=` + tags.join(',');
+      this.setState({
+         scene: sceneCopy,
+         filterTags: tags
+      })
+   }
 
 
    updatePolygon = () => {
@@ -40,17 +50,18 @@ class App extends React.Component {
             const tags = within.features.map(feature => feature.properties.Index);
 
             this.setState({
-               filterTags: tags,
                polygon: res.response.isoline[0].component[0].shape.map(x => [x.split(',')[0], x.split(',')[1]])
             })
+            this.updateFilterTags(tags);
          } else {
             this.setState({
                polygon: [],
-               filterTags: ''
             })
+            this.updateFilterTags('');
          }
       });
    }
+
 
    updateAddressText = () => {
       fetch(hereReverseGeocodeUrl(this.state.markerPosition))
@@ -93,21 +104,6 @@ class App extends React.Component {
       if (evt.keyCode === 27) {
          this.handleClearMarker();
       }
-   }
-
-   handleCategoryFilter = (evt) => {
-
-      const copy = this.state.categories.slice();
-
-      this.setState({
-         categories: copy.map(c => {
-            if (c.id === evt.target.id) {
-               c.active = !c.active;
-            }
-            return c;
-         })
-      })
-
    }
 
    handleAddressSearch = (evt) => {
@@ -206,9 +202,9 @@ class App extends React.Component {
                   zoom={this.state.zoom}
                   handleMarkerMove={this.handleMarkerMove}
                   polygon={this.state.polygon}
-                  filterTags={this.state.filterTags.length > 0 ? this.state.filterTags : []}
                   markerPosition={this.state.markerPosition}
                   tooltipActive={this.state.tooltipActive}
+                  scene={this.state.scene}
                />
             </div>
          </div>

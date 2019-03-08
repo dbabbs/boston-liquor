@@ -3,8 +3,9 @@ import { Map, Marker, Polygon, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { xyz } from './here'
 import Tangram from 'tangram';
+import TangramLayer from './TangramLayer'
 
-import SCENE from './SCENE'
+// import SCENE from './SCENE'
 
 export class MapContainer extends React.Component {
 
@@ -14,7 +15,7 @@ export class MapContainer extends React.Component {
 
       this.state = {
          loaded: false,
-         scene: SCENE,
+         // scene: SCENE,
          layer: null,
          popupPosition: [],
          popupHtml: 'Hello there'
@@ -53,48 +54,11 @@ export class MapContainer extends React.Component {
          })
       }
    }
-
-
+   
    componentDidMount = () => {
-      this.setState({
-         layer: Tangram.leafletLayer({
-            scene: this.state.scene,
-            events: {
-               hover: this.handleMapHover
-            }
-         })
-      }, () => {
-         this.state.layer.scene.subscribe({
-            load: (scene) => {
-               this.setState({
-                  loaded: true
-               })
-               setTimeout(() => {
-                  this.map.leafletElement.flyTo(this.props.center, 14)
-               }, 500)
-
-            }
-
-         })
-         this.state.layer.addTo(this.map.leafletElement);
-      })
-   }
-
-   componentDidUpdate() {
-      if (this.state.loaded) {
-         console.log('updated')
-         // this.state.layer.scene.config.sources._boston_alcohol.url = `https://xyz.api.here.com/hub/spaces/${xyz.space}/tile/web/{z}_{x}_{y}?tags=` + this.props.filterTags.join(',');
-         // this.state.layer.scene.updateConfig({ rebuild: true })
-         this.state.layer.scene.setDataSource('_boston_alcohol', {
-            type: 'GeoJSON',
-            url: `https://xyz.api.here.com/hub/spaces/${xyz.space}/tile/web/{z}_{x}_{y}?tags=` + this.props.filterTags.join(','),
-            url_params: {
-               access_token: xyz.token
-            }
-         });
-
-
-      }
+      setTimeout(() => {
+         this.map.leafletElement.flyTo(this.props.center, 14)
+      }, 500)
    }
 
    handleDrag = () => {
@@ -123,6 +87,10 @@ export class MapContainer extends React.Component {
                zoomControl={false}
                onClick={this.handleClick}
             >
+               <TangramLayer
+                  scene={this.props.scene}
+                  onMapHover={this.handleMapHover}
+               />
                {
                   this.props.markerPosition.length &&
                   <Marker
