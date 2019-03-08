@@ -1,10 +1,9 @@
 import React from 'react';
 import './App.css';
 import { MapContainer } from './MapContainer';
-import { hereIsolineUrl, hereReverseGeocodeUrl, hereGeocoderUrl } from './here';
-
+import { hereIsolineUrl, hereReverseGeocodeUrl, hereGeocoderUrl, xyz } from './here';
 import pointsWithinPolygon from '@turf/points-within-polygon';
-import {polygon} from '@turf/helpers'
+import { polygon } from '@turf/helpers'
 import { categories } from './config.js'
 
 class App extends React.Component {
@@ -139,7 +138,7 @@ class App extends React.Component {
 
       document.onkeydown = this.handleEscapeKey;
 
-      fetch('https://xyz.api.here.com/hub/spaces/PaLBoFL4/search?access_token=AbuvUKANJJEZR4nb1zkEXBE&tags=')
+      fetch(`https://xyz.api.here.com/hub/spaces/${xyz.space}/search?access_token=AbuvUKANJJEZR4nb1zkEXBE&tags=`)
          .then(res => res.json())
          .then(res => {
             this.setState({
