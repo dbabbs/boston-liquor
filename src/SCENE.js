@@ -31,7 +31,7 @@ const SCENE = {
 			},
 			"draw": {
 				"points": {
-					"color": "function() {\n    console.log(feature)\n    if (feature.Description === 'All_Alcohol') {\n        return '#3C4BF1';\n    } else if (feature.Description === 'Farmer') {\n        return '#8BFFF2'\n    } else if (feature.Description === 'Malt_Wine') {\n        return '#50D05E'\n    } else if (feature.Description === 'Malt_Wine_Liquor') {\n        return '#E265F0'\n    } else if (feature.Description === 'Other') {\n        return 'yellow'\n    } else if (feature.Description === 'Tavern') {\n        return '#EC3B43'\n    }\n}\n",
+					"color": "function() {\n     if (feature.Description === 'All_Alcohol') {\n        return '#3C4BF1';\n    } else if (feature.Description === 'Farmer') {\n        return '#8BFFF2'\n    } else if (feature.Description === 'Malt_Wine') {\n        return '#50D05E'\n    } else if (feature.Description === 'Malt_Wine_Liquor') {\n        return '#E265F0'\n    } else if (feature.Description === 'Other') {\n        return 'yellow'\n    } else if (feature.Description === 'Tavern') {\n        return '#EC3B43'\n    }\n}\n",
 					"size": [
 						[
 							13,

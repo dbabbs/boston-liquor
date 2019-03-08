@@ -1,5 +1,5 @@
 import React from 'react';
-import { Map, Marker, Polygon, Icon } from 'react-leaflet';
+import { Map, Marker, Polygon, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { xyz } from './here'
 import Tangram from 'tangram';
@@ -15,14 +15,53 @@ export class MapContainer extends React.Component {
       this.state = {
          loaded: false,
          scene: SCENE,
-         layer: null
+         layer: null,
+         popupPosition: [],
+         popupHtml: 'Hello there'
       }
    }
 
-   componentDidMount () {
+   handleMapHover = (evt) => {
+      if (evt.feature) {
+         const coordinates = evt.leaflet_event.latlng;
+
+         const cat = evt.feature.properties['Description'];
+         this.setState({
+            popupPosition: [coordinates.lat, coordinates.lng],
+            popupHtml: (<div>
+                           <h3>{evt.feature.properties['Business Name']}</h3>
+                           <div>Closes at <strong>{evt.feature.properties['Closing']}</strong></div>
+                           {
+                              evt.feature.properties['Capacity'] !== undefined &&
+                              <div>Capacity of <strong>{evt.feature.properties['Capacity']}</strong></div>
+                           }
+                           <div>Located at <strong>{evt.feature.properties['Address']}</strong></div>
+                           {
+                              cat === 'All_Alcohol' || cat === 'Malt_Wine' || cat === 'Malt_Wine_Liquor'
+                              ?
+                              <div>Serves <strong>{cat.split('_').join(' ')}</strong></div>
+                              :
+                              <div>Category of <strong>{cat}</strong></div>
+                           }
+                        </div>
+                       )
+         })
+      } else {
+         this.setState({
+            popupPosition: [],
+            popupHtml: ''
+         })
+      }
+   }
+
+
+   componentDidMount = () => {
       this.setState({
          layer: Tangram.leafletLayer({
-            scene: this.state.scene
+            scene: this.state.scene,
+            events: {
+               hover: this.handleMapHover
+            }
          })
       }, () => {
          this.state.layer.scene.subscribe({
@@ -40,7 +79,7 @@ export class MapContainer extends React.Component {
       if (this.state.loaded) {
          this.state.layer.scene.config.sources._boston_alcohol.url = `https://xyz.api.here.com/hub/spaces/${xyz.space}/tile/web/{z}_{x}_{y}?tags=` + this.props.filterTags.join(',');
          this.state.layer.scene.updateConfig()
-         console.log(this.state.layer.scene.config.sources._boston_alcohol.url)
+
       }
    }
 
@@ -62,7 +101,6 @@ export class MapContainer extends React.Component {
          popupAnchor: [1, -34],
          shadowSize: [41, 41]
       });
-      console.log(this.props.filterTags);
       return (
             <Map
                ref={(ref) => { this.map = ref }}
@@ -87,6 +125,16 @@ export class MapContainer extends React.Component {
                      positions={this.props.polygon}
                      color="#FF8281"
                   />
+               }
+               {
+                  this.state.popupPosition.length &&
+                  <Popup
+                     position={this.state.popupPosition}
+                     className="custom"
+                     closeButton={false}
+                  >
+                     {this.state.popupHtml}
+                  </Popup>
                }
             </Map>
       )

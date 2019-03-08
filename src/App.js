@@ -25,16 +25,7 @@ class App extends React.Component {
    }
 
 
-   componentDidMount = () => {
 
-      fetch('https://xyz.api.here.com/hub/spaces/PaLBoFL4/search?access_token=AbuvUKANJJEZR4nb1zkEXBE&tags=')
-         .then(res => res.json())
-         .then(res => {
-            this.setState({
-               points: res
-            })
-         });
-   }
 
    updatePolygon = () => {
       fetch(hereIsolineUrl(this.state.markerPosition, this.state.range))
@@ -64,9 +55,7 @@ class App extends React.Component {
       fetch(hereReverseGeocodeUrl(this.state.markerPosition))
       .then(res => res.json())
       .then(res => {
-         console.log(res);
          const address = res.Response.View[0].Result[0].Location.Address;
-         console.log(address);
          this.setState({
             address: `${address.HouseNumber !== undefined ? address.HouseNumber : ''}  ${address.Street !== undefined ? address.Street : ''} ${address.City}`
          })
@@ -98,6 +87,12 @@ class App extends React.Component {
       })
    }
 
+   handleEscapeKey = (evt) => {
+      if (evt.keyCode === 27) {
+         this.handleClearMarker();
+      }
+   }
+
    handleCategoryFilter = (evt) => {
       console.log(evt.target);
       const copy = this.state.categories.slice();
@@ -111,6 +106,19 @@ class App extends React.Component {
          })
       })
 
+   }
+
+   componentDidMount = () => {
+
+      document.onkeydown = this.handleEscapeKey;
+
+      fetch('https://xyz.api.here.com/hub/spaces/PaLBoFL4/search?access_token=AbuvUKANJJEZR4nb1zkEXBE&tags=')
+         .then(res => res.json())
+         .then(res => {
+            this.setState({
+               points: res
+            })
+         });
    }
 
    render() {
@@ -133,7 +141,7 @@ class App extends React.Component {
                <h2>Explore establishments in walking distance</h2>
                {
                   !this.state.markerPosition.length &&
-                  <p>Click the map to add a draggable marker</p>
+                  <p>Click the map to add a draggable marker to explore establishments.</p>
                }
 
                {
