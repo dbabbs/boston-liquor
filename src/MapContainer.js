@@ -77,14 +77,22 @@ export class MapContainer extends React.Component {
 
          })
          this.state.layer.addTo(this.map.leafletElement);
-
       })
    }
 
    componentDidUpdate() {
       if (this.state.loaded) {
-         this.state.layer.scene.config.sources._boston_alcohol.url = `https://xyz.api.here.com/hub/spaces/${xyz.space}/tile/web/{z}_{x}_{y}?tags=` + this.props.filterTags.join(',');
-         this.state.layer.scene.updateConfig({ rebuild: true })
+         console.log('updated')
+         // this.state.layer.scene.config.sources._boston_alcohol.url = `https://xyz.api.here.com/hub/spaces/${xyz.space}/tile/web/{z}_{x}_{y}?tags=` + this.props.filterTags.join(',');
+         // this.state.layer.scene.updateConfig({ rebuild: true })
+         this.state.layer.scene.setDataSource('_boston_alcohol', {
+            type: 'GeoJSON',
+            url: `https://xyz.api.here.com/hub/spaces/${xyz.space}/tile/web/{z}_{x}_{y}?tags=` + this.props.filterTags.join(','),
+            url_params: {
+               access_token: xyz.token
+            }
+         });
+
 
       }
    }
@@ -99,7 +107,7 @@ export class MapContainer extends React.Component {
    }
 
    render() {
-      var greenIcon = new L.Icon({
+      const redIcon = new L.Icon({
          iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
          iconSize: [25, 41],
@@ -122,7 +130,7 @@ export class MapContainer extends React.Component {
                      draggable={true}
                      onDragEnd={this.handleDrag}
                      ref={this.marker}
-                     icon={greenIcon}
+                     icon={redIcon}
                   />
                }
                {

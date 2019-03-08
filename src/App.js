@@ -66,7 +66,6 @@ class App extends React.Component {
    }
 
    handleMarkerMove = (coordinates) => {
-      console.log(coordinates)
       this.setState({
          markerPosition: coordinates
       }, () => {
@@ -98,7 +97,7 @@ class App extends React.Component {
    }
 
    handleCategoryFilter = (evt) => {
-      console.log(evt.target);
+
       const copy = this.state.categories.slice();
 
       this.setState({
@@ -126,9 +125,6 @@ class App extends React.Component {
 
          if (res.Response.View.length > 0) {
             const location = res.Response.View[0].Result[0].Location.DisplayPosition;
-            if (location === undefined) {
-               console.log('yo')
-            }
             this.handleMarkerMove([location.Latitude, location.Longitude]);
          } else {
             this.setState({
