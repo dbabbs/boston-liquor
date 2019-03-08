@@ -19,11 +19,8 @@ class TangramLayer extends MapLayer {
    }
 
    updateLeafletElement(fromProps, toProps) {
-      //const {map} = this.context
-      // console.log(this.layer.scene.config);
-      // console.log(toProps.scene)
-      // this.layer.scene.config = toProps.scene;
-      this.layer.scene.updateConfig({ rebuild: true })
+
+      this.layer.scene.updateConfig()
    }
 
    componentWillUnmount() {
