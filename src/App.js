@@ -22,7 +22,7 @@ class App extends React.Component {
          address: '',
          categories: categories,
          addressSearch: '134 Salem St. Boston',
-         tooltipActive: true
+         tooltipActive: false
       }
    }
 
