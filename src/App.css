@@ -1,8 +1,8 @@
 .app {
-   height: 100%;
-   display: flex;
-   flex-direction: column;
+   display: block;
    position: absolute;
+   height: 100vh;
+   width:100vw;
 }
 
 .map-grid {
@@ -46,7 +46,6 @@
 .custom .leaflet-popup-content-wrapper {
    background: white;
    border: 1px solid #E9E9E9;
-   border-radius: 5px;
    color: #656565;
    padding: 0;
    border-radius: 0;
@@ -105,4 +104,8 @@ a:hover {
 #link {
    margin-top: 20px;
    display: block;
+}
+
+p {
+   line-height: 26px;
 }

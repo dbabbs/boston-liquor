@@ -140,12 +140,11 @@ class App extends React.Component {
                }
                <h2>Explore establishments in walking distance</h2>
                {
-                  !this.state.markerPosition.length &&
+                  this.state.markerPosition.length < 1 &&
                   <p>Click the map to add a draggable marker to explore establishments.</p>
                }
-
                {
-                  this.state.markerPosition.length &&
+                  this.state.markerPosition.length > 0 &&
                   <div>
                      <div>
                         <input
@@ -168,7 +167,6 @@ class App extends React.Component {
                <a id="link" href="https://here.xyz">Get mappy with HERE XYZ</a>
             </div>
             <div className="map-grid">
-
                <MapContainer
                   center={this.state.startCoordinates}
                   zoom={this.state.zoom}
@@ -177,8 +175,6 @@ class App extends React.Component {
                   filterTags={this.state.filterTags.length > 0 ? this.state.filterTags : []}
                   markerPosition={this.state.markerPosition}
                />
-
-
             </div>
          </div>
       );
