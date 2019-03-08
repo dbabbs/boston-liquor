@@ -1,13 +1,13 @@
 {
   "main.css": "/boston-liquor/static/css/main.a4600d35.chunk.css",
-  "main.js": "/boston-liquor/static/js/main.e64da9d3.chunk.js",
-  "main.js.map": "/boston-liquor/static/js/main.e64da9d3.chunk.js.map",
+  "main.js": "/boston-liquor/static/js/main.4fd56018.chunk.js",
+  "main.js.map": "/boston-liquor/static/js/main.4fd56018.chunk.js.map",
   "static/js/1.5e39afae.chunk.js": "/boston-liquor/static/js/1.5e39afae.chunk.js",
   "static/js/1.5e39afae.chunk.js.map": "/boston-liquor/static/js/1.5e39afae.chunk.js.map",
   "runtime~main.js": "/boston-liquor/static/js/runtime~main.9d404ff4.js",
   "runtime~main.js.map": "/boston-liquor/static/js/runtime~main.9d404ff4.js.map",
   "static/css/main.a4600d35.chunk.css.map": "/boston-liquor/static/css/main.a4600d35.chunk.css.map",
   "index.html": "/boston-liquor/index.html",
-  "precache-manifest.61d81cc35d4ab2fe467b865b0d65a878.js": "/boston-liquor/precache-manifest.61d81cc35d4ab2fe467b865b0d65a878.js",
+  "precache-manifest.942b2a99cef2c91377f042f813e716e5.js": "/boston-liquor/precache-manifest.942b2a99cef2c91377f042f813e716e5.js",
   "service-worker.js": "/boston-liquor/service-worker.js"
 }

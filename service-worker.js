@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/boston-liquor/precache-manifest.61d81cc35d4ab2fe467b865b0d65a878.js"
+  "/boston-liquor/precache-manifest.942b2a99cef2c91377f042f813e716e5.js"
 );
 
 workbox.clientsClaim();
