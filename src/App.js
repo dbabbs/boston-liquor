@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { MapContainer } from './MapContainer';
-import { hereIsolineUrl, hereReverseGeocodeUrl } from './here';
+import { hereIsolineUrl, hereReverseGeocodeUrl, hereGeocoderUrl } from './here';
 
 import pointsWithinPolygon from '@turf/points-within-polygon';
 import {polygon} from '@turf/helpers'
@@ -17,10 +17,11 @@ class App extends React.Component {
          polygon: [],
          markerPosition: [],
          filterTags: '',
-         zoom: 8,
+         zoom: 10,
          range: 20,
          address: '',
-         categories: categories
+         categories: categories,
+         addressSearch: '134 Salem St. Boston'
       }
    }
 
@@ -57,12 +58,14 @@ class App extends React.Component {
       .then(res => {
          const address = res.Response.View[0].Result[0].Location.Address;
          this.setState({
-            address: `${address.HouseNumber !== undefined ? address.HouseNumber : ''}  ${address.Street !== undefined ? address.Street : ''} ${address.City}`
+            address: `${address.HouseNumber !== undefined ? address.HouseNumber : ''}  ${address.Street !== undefined ? address.Street : ''} ${address.City}`,
+            addressSearch: `${address.HouseNumber !== undefined ? address.HouseNumber : ''}  ${address.Street !== undefined ? address.Street : ''} ${address.City}`
          })
       })
    }
 
    handleMarkerMove = (coordinates) => {
+      console.log(coordinates)
       this.setState({
          markerPosition: coordinates
       }, () => {
@@ -108,6 +111,33 @@ class App extends React.Component {
 
    }
 
+   handleAddressSearch = (evt) => {
+      const search = evt.target.value;
+      this.setState({
+         addressSearch: search
+      })
+   }
+
+   handleAddressSearchClick = () => {
+      fetch(hereGeocoderUrl(this.state.addressSearch))
+      .then(res => res.json())
+      .then(res => {
+
+         if (res.Response.View.length > 0) {
+            const location = res.Response.View[0].Result[0].Location.DisplayPosition;
+            if (location === undefined) {
+               console.log('yo')
+            }
+            this.handleMarkerMove([location.Latitude, location.Longitude]);
+         } else {
+            this.setState({
+               addressSearch: 'Error!'
+            })
+         }
+
+      })
+   }
+
    componentDidMount = () => {
 
       document.onkeydown = this.handleEscapeKey;
@@ -141,12 +171,18 @@ class App extends React.Component {
                <h2>Explore establishments in walking distance</h2>
                {
                   this.state.markerPosition.length < 1 &&
-                  <p>Click the map to add a draggable marker to explore establishments.</p>
+                  <>
+                     <p>Click the map to add a draggable marker to explore establishments.</p>
+                     <p>...or enter an address:</p>
+                     <input type="text" value={this.state.addressSearch} onChange={this.handleAddressSearch} />
+                     <span style={{marginRight: '10px', display: 'inline-block'}}></span>
+                     <button onClick={this.handleAddressSearchClick}>Search</button>
+                  </>
                }
                {
                   this.state.markerPosition.length > 0 &&
                   <div>
-                     <div>
+                     <div className="slider-container">
                         <input
                            type="range"
                            value={this.state.range}
@@ -154,7 +190,7 @@ class App extends React.Component {
                            max="60"
                            onChange={this.handleSlide}
                         />
-                        {this.state.range}{" minutes"}
+                     {"  "}{this.state.range}{" minutes"}
                      </div>
                      <p>Within a <strong>{this.state.range}</strong> minute walk of <strong>{this.state.address}</strong>, there are <strong>{this.state.filterTags.length}</strong> establishments that serve liquor.</p>
                      <button
@@ -164,7 +200,7 @@ class App extends React.Component {
                      </button>
                   </div>
                }
-               <a id="link" href="https://here.xyz">Get mappy with HERE XYZ</a>
+               <a target="_blank" rel="noopener noreferrer" id="link" href="https://here.xyz">Get mappy with HERE XYZ</a>
             </div>
             <div className="map-grid">
                <MapContainer
