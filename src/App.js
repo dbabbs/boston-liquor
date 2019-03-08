@@ -17,7 +17,7 @@ class App extends React.Component {
          polygon: [],
          markerPosition: [],
          filterTags: '',
-         zoom: 14,
+         zoom: 8,
          range: 20,
          address: '',
          categories: categories

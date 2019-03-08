@@ -69,9 +69,15 @@ export class MapContainer extends React.Component {
                this.setState({
                   loaded: true
                })
+               setTimeout(() => {
+                  this.map.leafletElement.flyTo(this.props.center, 14)
+               }, 500)
+
             }
+
          })
          this.state.layer.addTo(this.map.leafletElement);
+
       })
    }
 
