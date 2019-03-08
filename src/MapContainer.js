@@ -22,7 +22,7 @@ export class MapContainer extends React.Component {
    }
 
    handleMapHover = (evt) => {
-      if (evt.feature) {
+      if (evt.feature && this.props.tooltipActive) {
          const coordinates = evt.leaflet_event.latlng;
 
          const cat = evt.feature.properties['Description'];

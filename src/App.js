@@ -21,7 +21,8 @@ class App extends React.Component {
          range: 20,
          address: '',
          categories: categories,
-         addressSearch: '134 Salem St. Boston'
+         addressSearch: '134 Salem St. Boston',
+         tooltipActive: true
       }
    }
 
@@ -157,6 +158,8 @@ class App extends React.Component {
             <div className="sidebar">
                <h1>Boston Liquor Licenses 🍻</h1>
                <p>List of establishments with liqour licenses in Boston, MA from 2016.</p>
+               <input type="checkbox" id="tooltip" checked={this.state.tooltipActive} onChange={() => this.setState({tooltipActive: !this.state.tooltipActive})} />
+               <label htmlFor="tooltip">Tooltip active</label>
                <h2>Establishment type</h2>
 
                {
@@ -210,6 +213,7 @@ class App extends React.Component {
                   polygon={this.state.polygon}
                   filterTags={this.state.filterTags.length > 0 ? this.state.filterTags : []}
                   markerPosition={this.state.markerPosition}
+                  tooltipActive={this.state.tooltipActive}
                />
             </div>
          </div>
