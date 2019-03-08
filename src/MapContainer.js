@@ -84,7 +84,7 @@ export class MapContainer extends React.Component {
    componentDidUpdate() {
       if (this.state.loaded) {
          this.state.layer.scene.config.sources._boston_alcohol.url = `https://xyz.api.here.com/hub/spaces/${xyz.space}/tile/web/{z}_{x}_{y}?tags=` + this.props.filterTags.join(',');
-         this.state.layer.scene.updateConfig()
+         this.state.layer.scene.updateConfig({ rebuild: true })
 
       }
    }
