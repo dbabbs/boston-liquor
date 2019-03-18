@@ -16,7 +16,7 @@ self.__precacheManifest = [
     "url": "/boston-liquor/static/css/main.c9d8abb2.chunk.css"
   },
   {
-    "revision": "ac0fbed743e25be3f860c301ab23142e",
+    "revision": "df657dc32cbdf79bdece1dc936f05506",
     "url": "/boston-liquor/index.html"
   }
 ];
