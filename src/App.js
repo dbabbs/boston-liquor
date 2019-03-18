@@ -148,7 +148,7 @@ class App extends React.Component {
          <div className="app">
             <div className="sidebar">
                <h1>Boston Liquor Licenses 🍻</h1>
-               <p>List of establishments with liqour licenses in Boston, MA from 2016.</p>
+               <p>List of establishments with liquor licenses in Boston, MA from 2016.</p>
                <input type="checkbox" id="tooltip" checked={this.state.tooltipActive} onChange={() => this.setState({tooltipActive: !this.state.tooltipActive})} />
                <label htmlFor="tooltip">Tooltip active</label>
                <h2>Establishment type</h2>
@@ -190,7 +190,7 @@ class App extends React.Component {
                      <button
                         onClick={this.handleClearMarker}
                      >
-                        Clear Isoline Filter
+                        Clear Filter
                      </button>
                   </div>
                }
