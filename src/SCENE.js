@@ -14,6 +14,9 @@ const SCENE = {
       "xyz_osm": {
          "type": "MVT",
          "url": "https://xyz.api.here.com/tiles/osmbase/256/all/{z}/{x}/{y}.mvt",
+         "url_params": {
+            "access_token": xyz.token
+         },
          "max_zoom": 16
       },
       "_boston_alcohol": {

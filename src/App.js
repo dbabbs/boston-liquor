@@ -57,7 +57,7 @@ class App extends React.Component {
             this.setState({
                polygon: [],
             })
-            this.updateFilterTags('');
+            this.updateFilterTags([]);
          }
       });
    }
