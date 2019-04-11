@@ -5,7 +5,7 @@ const hereCredentials = {
 
 const xyz = {
    space: 'Vv1iS7FJ',
-   token: 'ALWZfy8j9YlwT0ejfMRv0lE'
+   token: 'AZL4Ab9z2cBFt9d2PQ2hh0k'
 }
 
 const hereIsolineUrl = (coords, range) => `https://isoline.route.api.here.com/routing/7.2/calculateisoline.json?app_id=${hereCredentials.id}&app_code=${hereCredentials.code}&mode=shortest;pedestrian;traffic:disabled&start=geo!${coords[0]},${coords[1]}&range=${range * 60}&rangetype=time`
